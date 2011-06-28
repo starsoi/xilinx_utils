@@ -13,7 +13,7 @@ def bit2ascii(bit):
 		file_bit = open(bit, 'rb')
 	except IOError:
 		print 'FAILED: Open bit file: ' + bit
-		return
+		sys.exit()
 	
 	while ord(file_bit.read(1)) != 0xff:
 		pass

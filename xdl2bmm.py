@@ -22,6 +22,7 @@ def parse(xdl):
 		file_xdl = open(xdl, 'r')
 	except IOError:
 		print 'FAILED: Open xdl file: ' + xdl
+		sys.exit()
 		
 	re_ram = re.compile('^inst\s"[\w/\.]+ramloop\[\d+\][\w/\.]+"')
 	re_ram_i = re.compile('\[\d+\]')
@@ -87,6 +88,7 @@ def xdl2bmm(xdl):
 		open(xdl.split('.')[0] + '.bmm', 'w').write(bmm)
 	except IOError:
 		print 'FAILED: Write bmm file.'
+		sys.exit()
 	print 'DONE: BMM file generation.'
 	
 def main():
