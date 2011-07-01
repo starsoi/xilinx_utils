@@ -26,31 +26,35 @@ class packet(object):
 						0x11:'TIMER',
 						0x13:'UNKOWN_REG',
 						0x16:'BOOTSTS',
-						0x18:'CTL1'}
+						0x18:'CTL1',
+						0xFF:'FF'}
 
-	def __init__(self, p):
-		if type(p) is not array.array: # expected that p is of type array('B')
+	def __init__(self, hdr):
+		if type(hdr) is not array.array: # expected that p is of type array('I')
 			raise 'Array expected'
 		
-		self.data = array.array('B')
+		self.data = array.array('I')
 		
-		pW = p[0] << 24 | p[1] << 16 | p[2] << 8 | p[3]
-		
-		self.hdr_type = (pW >> 29) & 0x7
-		
-		if self.hdr_type == 0x1:
-			self.op = (pW >> 27) & 0x3
-			self.reg_addr = (pW >> 13) & 0x1F
-			self.word_cnt = pW & 0x3ff
-		elif self.hdr_type == 0x2:
-			self.op = (pW >> 27) & 0x3
-			self.word_cnt = pW & 0x7ffffff
-			
-		self.hdr_raw = pW
-			
+		hdr.byteswap()
+		hdr = hdr[0]
 
-	def reg(self):
-		return Register_Type1[self.reg_addr]
+		self.hdr_type = (hdr >> 29) & 0x7
+		if self.hdr_type == 0x1:
+			self.op = (hdr >> 27) & 0x3
+			self.reg_addr = (hdr >> 13) & 0x1F
+			self.word_cnt = hdr & 0x3ff
+		elif self.hdr_type == 0x2:
+			self.op = (hdr >> 27) & 0x3
+			self.word_cnt = hdr & 0x7ffffff
+			
+		self.hdr_raw = hdr
+		self.is_frame_data = False
+
+	def get_reg(self):
+		return packet.Register_Type1[self.reg_addr]
+		
+	def get_op(self):
+		return packet.Opcode[self.op]
 			
 	def __str__(self):
 		return self.__repr__()
