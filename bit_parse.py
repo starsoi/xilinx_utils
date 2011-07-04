@@ -30,7 +30,7 @@ def print_packets(parser):
 			print '%08x: %s' % (p.hdr_raw, str(p))
 		
 		if p.is_frame_data:
-			print '(...%d frames...)' % len(parser.frames)
+			print '(...%d frames...)' % (p.word_cnt / FRAME_LENGTH_WORD)
 						
 def print_frames(parser):
 	for i in range(len(parser.frames)):

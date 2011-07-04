@@ -1,3 +1,7 @@
+'''
+auto-increment for frame address is not implemented
+'''
+
 import array
 from packets import *
 from frame import *
@@ -10,7 +14,8 @@ class bitstream_parser(object):
 		try:
 			file_bit = open(bit, 'rb')
 		except IOError:
-			raise 'FAILED: Open bit file: ' + bit
+			err = 'FAILED: Open bit file: ' + bit
+			raise Exception, err
 	
 		while ord(file_bit.read(1)) != 0xff:
 			pass	
@@ -25,6 +30,8 @@ class bitstream_parser(object):
 		
 		while bitstring:
 			p = packet(array.array('L', bitstring))
+			#print '%x: %02x%02x%02x%02x' % (file_bit.tell(), ord(bitstring[0]), ord(bitstring[1]), ord(bitstring[2]), ord(bitstring[3]))
+			#print p
 			if p.word_cnt > 0:
 				p.data.fromstring(file_bit.read(p.word_cnt*4))
 				p.data.byteswap()
